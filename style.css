@@ -1,0 +1,49 @@
+.board-cell{
+    height: 5rem;
+    width: 5rem;
+    border: 2px solid limegreen;
+    display: flex;
+}
+
+#null{
+    display: flex;
+    flex-flow: row wrap;
+    height: 30rem;
+    width: 40rem;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#names{
+    display: flex;
+    justify-content: space-around;
+    color: limegreen;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: .1em;
+}
+
+#name-1{
+    background-color: darkblue;
+}
+
+#name-2{
+    background-color: darkblue;
+}
+
+#gameboard{
+    display: flex;
+    justify-content: center;
+}
+
+.button{
+    width: inherit;
+}
+
+.red{
+    background-color: red;
+}
+
+.yellow{
+    background-color: yellow;
+}
