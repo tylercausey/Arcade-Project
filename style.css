@@ -50,3 +50,8 @@ body {
 .purple{
     background-color: purple;
 }
+
+#reset{
+    width: 100px;
+    height: 75px;
+}

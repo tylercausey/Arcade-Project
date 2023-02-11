@@ -21,10 +21,7 @@ window.addEventListener("DOMContentLoaded", player1AddingName);
 window.addEventListener("DOMContentLoaded", player2AddingName);
 
 //creating gameboard
-
 let gameboardHTML=document.getElementById("gameboard");
-
-
 
 let gameboard = [
     [],
@@ -46,9 +43,10 @@ function buildGameboard(){
             newGameboardCell.classList.add("board-cell");
             let cellID = (i*6)+(j+1);
             newGameboardCell.setAttribute("id", cellID);
-            //adding the coloring listener and the listener to make sure users must start from bottom of column and work their way up
+            //adding the coloring listener, the work up a column listener, and the win condition checker listener
             newGameboardCell.addEventListener("click",colorCell);
             newGameboardCell.addEventListener("click",goUpTheColumn);
+            newGameboardCell.addEventListener("click",checkForWin);
             gameboardHTML.appendChild(newGameboardCell);
         }
     }
@@ -90,66 +88,12 @@ function colorCell(event){
         event.target.classList.add("purple");
         event.target.classList.remove("red");
         playerTurn = 1;
-    // } else if(!event.target.classList.contains("lowestAvailableCellInColumn")){
-    //     alert("no cell should be colored");
     } else{
         console.log("error");
     }
 }
 
-//setting win condition not sure what to do with it at the moment
-let winCondition = [
-    //rows 1-6
-    [1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7],
-    [8,9,10,11],[9,10,11,12],[10,11,12,13],[11,12,13,14],
-    [15,16,17,18],[16,17,18,19],[17,18,19,20],[18,19,20,21],
-    [22,23,24,25],[23,24,25,26],[24,25,26,27],[25,26,27,28],
-    [29,30,31,32],[30,31,32,33],[31,32,33,34],[32,33,34,35],
-    [36,37,38,39],[37,38,39,40],[38,39,40,41],[39,40,41,42],
-    //columns 1-7
-    [1,8,15,22],[8,15,22,29],[15,22,29,36],
-    [2,9,16,23],[9,16,23,30],[16,23,30,37],
-    [3,10,17,24],[10,17,24,31],[17,24,31,38],
-    [4,11,18,25],[11,18,25,32],[18,25,32,39],
-    [5,12,19,26],[12,19,26,33],[19,26,33,40],
-    [6,13,20,27],[13,20,27,34],[20,27,34,41],
-    [7,14,21,28],[14,21,28,35],[21,28,35,42],
-    //diagonals from column 1 working down column (left to right)
-    [1,9,17,25],[9,17,25,33],[17,25,33,41],
-    [8,16,24,32],[16,24,32,40],
-    [15,23,31,39],
-    //diagonals from column 2 working down column (left to right); only the first row needed since other rows already accounted for in earlier diagonals
-    [2,10,18,26],[10,18,26,34,],[18,26,34,42],
-    //diagonals from column 3 working down column (left to right); already added arrays omitted
-    [3,11,19,27],[11,19,27,35],
-    //diagonals from column 4 working down column (left to right); already added arrays omitted
-    [4,12,20,28],
-    //diagonals from column 4 working down column diagonally (right to left)
-    [4,10,16,22],
-    //diagonals from column 5 working down column diagonally (right to left)
-    [5,11,17,23],[11,17,23,29],
-    //diagonals from column 6 working down column diagonally (right to left)
-    [6,12,18,24],[12,18,24,30],[18,24,30,36],
-    //diagonals from column 7 working down column diagonally (right to left), then down the column
-    [7,13,19,25],[13,19,25,31],[19,25,31,37],
-    [14,20,26,32],[20,26,32,38],
-    [21,27,33,39]
-]
-
-//setting column values not currently being used they're more for reference
-// let column1 = (1,8,15,22,29,36)
-// let column2 = (2,9,16,23,30,37)
-// let column3 = (3,10,17,24,31,38)
-// let column4 = (4,11,18,25,32,39)
-// let column5 = (5,12,19,26,33,40)
-// let column6 = (6,13,20,27,34,41)
-// let column7 = (7,14,21,28,35,42)
-
 //making it so that you must start from bottom of column and go up
-
-//currently throwing error message if cell doesn't have the lowestavailable class on it/, but will still let you choose it. 
-//
-
 function goUpTheColumn(event){
     if (event.target.classList.contains("lowestAvailableCellInColumn")){
         event.target.classList.add("alreadyChosen");
@@ -162,7 +106,6 @@ function goUpTheColumn(event){
         }
     else if(!event.target.classList.contains("red") && !event.target.classList.contains("alreadyChosen")){
         alert("Please select the lowest column.");
-        // bad attempt to just remove the classes, because it will remove class of correctly played pieces as well
         event.target.classList.remove("purple");
         event.target.classList.remove("red");
         playerTurn = 2;
@@ -174,6 +117,1359 @@ function goUpTheColumn(event){
     }
 }
 
-//need to make condition if all cells have class alreadyChosen then say game over
-//for reset button and for win condition being triggered: need to make function to clear out all of the classes accumulated
+//win condition checker (this is very long)
+function checkForWin(){
+    if (
+        //COLUMN 1
+        (document.getElementById("1").classList.contains("red") && document.getElementById("2").classList.contains("red") && 
+        document.getElementById("3").classList.contains("red") && document.getElementById("4").classList.contains("red")) ||
 
+        (document.getElementById("2").classList.contains("red") && document.getElementById("3").classList.contains("red") && 
+        document.getElementById("4").classList.contains("red") && document.getElementById("5").classList.contains("red")) ||
+
+        (document.getElementById("3").classList.contains("red") && document.getElementById("4").classList.contains("red") && 
+        document.getElementById("5").classList.contains("red") && document.getElementById("6").classList.contains("red")) ||
+
+        //COLUMN 2
+        (document.getElementById("7").classList.contains("red") && document.getElementById("8").classList.contains("red") && 
+        document.getElementById("9").classList.contains("red") && document.getElementById("10").classList.contains("red")) ||
+
+        (document.getElementById("8").classList.contains("red") && document.getElementById("9").classList.contains("red") && 
+        document.getElementById("10").classList.contains("red") && document.getElementById("11").classList.contains("red"))||
+        
+        (document.getElementById("9").classList.contains("red") && document.getElementById("10").classList.contains("red") && 
+        document.getElementById("11").classList.contains("red") && document.getElementById("12").classList.contains("red")) ||
+
+        //COLUMN 3
+        (document.getElementById("13").classList.contains("red") && document.getElementById("14").classList.contains("red") && 
+        document.getElementById("15").classList.contains("red") && document.getElementById("16").classList.contains("red")) ||
+
+        (document.getElementById("14").classList.contains("red") && document.getElementById("15").classList.contains("red") && 
+        document.getElementById("16").classList.contains("red") && document.getElementById("17").classList.contains("red")) ||
+
+        (document.getElementById("15").classList.contains("red") && document.getElementById("16").classList.contains("red") && 
+        document.getElementById("17").classList.contains("red") && document.getElementById("18").classList.contains("red")) ||
+
+        //COLUMN 4
+        (document.getElementById("19").classList.contains("red") && document.getElementById("20").classList.contains("red") && 
+        document.getElementById("21").classList.contains("red") && document.getElementById("22").classList.contains("red")) ||
+
+        (document.getElementById("20").classList.contains("red") && document.getElementById("21").classList.contains("red") && 
+        document.getElementById("22").classList.contains("red") && document.getElementById("23").classList.contains("red")) ||
+
+        (document.getElementById("21").classList.contains("red") && document.getElementById("22").classList.contains("red") && 
+        document.getElementById("23").classList.contains("red") && document.getElementById("24").classList.contains("red")) ||
+
+        //COLUMN 5
+        (document.getElementById("25").classList.contains("red") && document.getElementById("26").classList.contains("red") && 
+        document.getElementById("27").classList.contains("red") && document.getElementById("28").classList.contains("red")) ||
+
+        (document.getElementById("26").classList.contains("red") && document.getElementById("27").classList.contains("red") && 
+        document.getElementById("28").classList.contains("red") && document.getElementById("29").classList.contains("red")) ||
+
+        (document.getElementById("27").classList.contains("red") && document.getElementById("28").classList.contains("red") && 
+        document.getElementById("29").classList.contains("red") && document.getElementById("30").classList.contains("red")) ||
+
+        //COLUMN 6
+        (document.getElementById("31").classList.contains("red") && document.getElementById("32").classList.contains("red") && 
+        document.getElementById("33").classList.contains("red") && document.getElementById("34").classList.contains("red")) ||
+
+        (document.getElementById("32").classList.contains("red") && document.getElementById("33").classList.contains("red") && 
+        document.getElementById("34").classList.contains("red") && document.getElementById("35").classList.contains("red")) ||
+
+        (document.getElementById("33").classList.contains("red") && document.getElementById("34").classList.contains("red") && 
+        document.getElementById("35").classList.contains("red") && document.getElementById("36").classList.contains("red")) ||
+
+        //COLUMN 7
+        (document.getElementById("37").classList.contains("red") && document.getElementById("38").classList.contains("red") && 
+        document.getElementById("39").classList.contains("red") && document.getElementById("40").classList.contains("red")) ||
+
+        (document.getElementById("38").classList.contains("red") && document.getElementById("39").classList.contains("red") && 
+        document.getElementById("40").classList.contains("red") && document.getElementById("41").classList.contains("red")) ||
+
+        (document.getElementById("39").classList.contains("red") && document.getElementById("40").classList.contains("red") && 
+        document.getElementById("41").classList.contains("red") && document.getElementById("42").classList.contains("red")) ||
+
+        //ROW 1
+        (document.getElementById("1").classList.contains("red") && document.getElementById("7").classList.contains("red") && 
+        document.getElementById("13").classList.contains("red") && document.getElementById("19").classList.contains("red")) ||
+
+        (document.getElementById("7").classList.contains("red") && document.getElementById("13").classList.contains("red") && 
+        document.getElementById("19").classList.contains("red") && document.getElementById("25").classList.contains("red")) ||
+
+        (document.getElementById("13").classList.contains("red") && document.getElementById("19").classList.contains("red") && 
+        document.getElementById("25").classList.contains("red") && document.getElementById("31").classList.contains("red")) ||
+
+        (document.getElementById("19").classList.contains("red") && document.getElementById("25").classList.contains("red") && 
+        document.getElementById("31").classList.contains("red") && document.getElementById("37").classList.contains("red")) ||
+
+        //ROW 2
+        (document.getElementById("2").classList.contains("red") && document.getElementById("8").classList.contains("red") && 
+        document.getElementById("14").classList.contains("red") && document.getElementById("20").classList.contains("red")) ||
+
+        (document.getElementById("8").classList.contains("red") && document.getElementById("14").classList.contains("red") && 
+        document.getElementById("20").classList.contains("red") && document.getElementById("26").classList.contains("red")) ||
+
+        (document.getElementById("14").classList.contains("red") && document.getElementById("20").classList.contains("red") && 
+        document.getElementById("26").classList.contains("red") && document.getElementById("32").classList.contains("red")) ||
+
+        (document.getElementById("20").classList.contains("red") && document.getElementById("26").classList.contains("red") && 
+        document.getElementById("32").classList.contains("red") && document.getElementById("38").classList.contains("red")) ||
+
+        //ROW 3
+        (document.getElementById("3").classList.contains("red") && document.getElementById("9").classList.contains("red") && 
+        document.getElementById("15").classList.contains("red") && document.getElementById("21").classList.contains("red")) ||
+
+        (document.getElementById("9").classList.contains("red") && document.getElementById("15").classList.contains("red") && 
+        document.getElementById("21").classList.contains("red") && document.getElementById("27").classList.contains("red")) ||
+
+        (document.getElementById("15").classList.contains("red") && document.getElementById("21").classList.contains("red") && 
+        document.getElementById("27").classList.contains("red") && document.getElementById("33").classList.contains("red")) ||
+
+        (document.getElementById("21").classList.contains("red") && document.getElementById("27").classList.contains("red") && 
+        document.getElementById("33").classList.contains("red") && document.getElementById("39").classList.contains("red")) ||
+
+        //ROW 4
+        (document.getElementById("4").classList.contains("red") && document.getElementById("10").classList.contains("red") && 
+        document.getElementById("16").classList.contains("red") && document.getElementById("22").classList.contains("red")) ||
+
+        (document.getElementById("10").classList.contains("red") && document.getElementById("16").classList.contains("red") && 
+        document.getElementById("22").classList.contains("red") && document.getElementById("28").classList.contains("red")) ||
+
+        (document.getElementById("16").classList.contains("red") && document.getElementById("22").classList.contains("red") && 
+        document.getElementById("28").classList.contains("red") && document.getElementById("34").classList.contains("red")) ||
+
+        (document.getElementById("22").classList.contains("red") && document.getElementById("28").classList.contains("red") && 
+        document.getElementById("34").classList.contains("red") && document.getElementById("40").classList.contains("red")) ||
+
+        //ROW 5
+        (document.getElementById("5").classList.contains("red") && document.getElementById("11").classList.contains("red") && 
+        document.getElementById("17").classList.contains("red") && document.getElementById("23").classList.contains("red")) ||
+
+        (document.getElementById("11").classList.contains("red") && document.getElementById("17").classList.contains("red") && 
+        document.getElementById("23").classList.contains("red") && document.getElementById("29").classList.contains("red")) ||
+
+        (document.getElementById("17").classList.contains("red") && document.getElementById("23").classList.contains("red") && 
+        document.getElementById("29").classList.contains("red") && document.getElementById("35").classList.contains("red")) ||
+
+        (document.getElementById("23").classList.contains("red") && document.getElementById("29").classList.contains("red") && 
+        document.getElementById("35").classList.contains("red") && document.getElementById("41").classList.contains("red")) ||
+
+        //ROW 6
+        (document.getElementById("6").classList.contains("red") && document.getElementById("12").classList.contains("red") && 
+        document.getElementById("18").classList.contains("red") && document.getElementById("24").classList.contains("red")) ||
+
+        (document.getElementById("12").classList.contains("red") && document.getElementById("18").classList.contains("red") && 
+        document.getElementById("24").classList.contains("red") && document.getElementById("30").classList.contains("red")) ||
+
+        (document.getElementById("18").classList.contains("red") && document.getElementById("24").classList.contains("red") && 
+        document.getElementById("30").classList.contains("red") && document.getElementById("36").classList.contains("red")) ||
+
+        (document.getElementById("24").classList.contains("red") && document.getElementById("30").classList.contains("red") && 
+        document.getElementById("36").classList.contains("red") && document.getElementById("42").classList.contains("red")) ||
+
+        //DIAGONAL FROM BOTTOM LEFT CORNER (WORKING UP COLUMN 1)
+        (document.getElementById("3").classList.contains("red") && document.getElementById("10").classList.contains("red") && 
+        document.getElementById("17").classList.contains("red") && document.getElementById("24").classList.contains("red")) ||
+
+        (document.getElementById("2").classList.contains("red") && document.getElementById("9").classList.contains("red") && 
+        document.getElementById("16").classList.contains("red") && document.getElementById("23").classList.contains("red")) ||
+
+        (document.getElementById("9").classList.contains("red") && document.getElementById("16").classList.contains("red") && 
+        document.getElementById("23").classList.contains("red") && document.getElementById("30").classList.contains("red")) ||
+
+        (document.getElementById("1").classList.contains("red") && document.getElementById("8").classList.contains("red") && 
+        document.getElementById("15").classList.contains("red") && document.getElementById("22").classList.contains("red")) ||
+
+        (document.getElementById("8").classList.contains("red") && document.getElementById("15").classList.contains("red") && 
+        document.getElementById("22").classList.contains("red") && document.getElementById("29").classList.contains("red")) ||
+
+        (document.getElementById("15").classList.contains("red") && document.getElementById("22").classList.contains("red") && 
+        document.getElementById("29").classList.contains("red") && document.getElementById("36").classList.contains("red")) ||
+
+        //DIAGONAL FROM BOTTOM LEFT CORNER (WORKING ACROSS ROW 1 LEFT TO RIGHT)
+        (document.getElementById("7").classList.contains("red") && document.getElementById("14").classList.contains("red") && 
+        document.getElementById("21").classList.contains("red") && document.getElementById("28").classList.contains("red")) ||
+
+        (document.getElementById("14").classList.contains("red") && document.getElementById("21").classList.contains("red") && 
+        document.getElementById("28").classList.contains("red") && document.getElementById("35").classList.contains("red")) ||
+
+        (document.getElementById("21").classList.contains("red") && document.getElementById("28").classList.contains("red") && 
+        document.getElementById("35").classList.contains("red") && document.getElementById("42").classList.contains("red")) ||
+
+        (document.getElementById("13").classList.contains("red") && document.getElementById("20").classList.contains("red") && 
+        document.getElementById("27").classList.contains("red") && document.getElementById("34").classList.contains("red")) ||
+
+        (document.getElementById("20").classList.contains("red") && document.getElementById("27").classList.contains("red") && 
+        document.getElementById("34").classList.contains("red") && document.getElementById("41").classList.contains("red")) ||
+
+        (document.getElementById("19").classList.contains("red") && document.getElementById("26").classList.contains("red") && 
+        document.getElementById("33").classList.contains("red") && document.getElementById("40").classList.contains("red")) ||
+
+        //DIAGONAL FROM BOTTOM RIGHT CORNER (WORKING UP COLUMN 7)
+        (document.getElementById("39").classList.contains("red") && document.getElementById("34").classList.contains("red") && 
+        document.getElementById("29").classList.contains("red") && document.getElementById("24").classList.contains("red")) ||
+
+        (document.getElementById("38").classList.contains("red") && document.getElementById("33").classList.contains("red") && 
+        document.getElementById("28").classList.contains("red") && document.getElementById("23").classList.contains("red")) ||
+
+        (document.getElementById("33").classList.contains("red") && document.getElementById("28").classList.contains("red") && 
+        document.getElementById("23").classList.contains("red") && document.getElementById("18").classList.contains("red")) ||
+
+        (document.getElementById("37").classList.contains("red") && document.getElementById("32").classList.contains("red") && 
+        document.getElementById("27").classList.contains("red") && document.getElementById("22").classList.contains("red")) ||
+
+        (document.getElementById("32").classList.contains("red") && document.getElementById("27").classList.contains("red") && 
+        document.getElementById("22").classList.contains("red") && document.getElementById("17").classList.contains("red")) ||
+
+        (document.getElementById("27").classList.contains("red") && document.getElementById("22").classList.contains("red") && 
+        document.getElementById("17").classList.contains("red") && document.getElementById("12").classList.contains("red")) ||
+
+        //DIAGONAL FROM BOTTOM RIGHT CORNER (WORKING ACROSS ROW 1 FROM RIGHT TO LEFT)
+        (document.getElementById("31").classList.contains("red") && document.getElementById("26").classList.contains("red") && 
+        document.getElementById("21").classList.contains("red") && document.getElementById("16").classList.contains("red")) ||
+
+        (document.getElementById("26").classList.contains("red") && document.getElementById("21").classList.contains("red") && 
+        document.getElementById("16").classList.contains("red") && document.getElementById("11").classList.contains("red")) ||
+
+        (document.getElementById("21").classList.contains("red") && document.getElementById("16").classList.contains("red") && 
+        document.getElementById("11").classList.contains("red") && document.getElementById("6").classList.contains("red")) ||
+
+        (document.getElementById("25").classList.contains("red") && document.getElementById("20").classList.contains("red") && 
+        document.getElementById("15").classList.contains("red") && document.getElementById("10").classList.contains("red")) ||
+
+        (document.getElementById("20").classList.contains("red") && document.getElementById("15").classList.contains("red") && 
+        document.getElementById("10").classList.contains("red") && document.getElementById("5").classList.contains("red")) ||
+
+        (document.getElementById("19").classList.contains("red") && document.getElementById("14").classList.contains("red") && 
+        document.getElementById("9").classList.contains("red") && document.getElementById("4").classList.contains("red")) 
+    ){
+        alert(player1Name.textContent+" Wins!")
+        document.getElementById("1").classList.remove("red")
+        document.getElementById("1").classList.remove("purple")
+        document.getElementById("1").classList.remove("alreadyChosen")
+        document.getElementById("1").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("2").classList.remove("red")
+        document.getElementById("2").classList.remove("purple")
+        document.getElementById("2").classList.remove("alreadyChosen")
+        document.getElementById("2").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("3").classList.remove("red")
+        document.getElementById("3").classList.remove("purple")
+        document.getElementById("3").classList.remove("alreadyChosen")
+        document.getElementById("3").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("4").classList.remove("red")
+        document.getElementById("4").classList.remove("purple")
+        document.getElementById("4").classList.remove("alreadyChosen")
+        document.getElementById("4").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("5").classList.remove("red")
+        document.getElementById("5").classList.remove("purple")
+        document.getElementById("5").classList.remove("alreadyChosen")
+        document.getElementById("5").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("6").classList.remove("red")
+        document.getElementById("6").classList.remove("purple")
+        document.getElementById("6").classList.remove("alreadyChosen")
+        document.getElementById("6").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("7").classList.remove("red")
+        document.getElementById("7").classList.remove("purple")
+        document.getElementById("7").classList.remove("alreadyChosen")
+        document.getElementById("7").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("8").classList.remove("red")
+        document.getElementById("8").classList.remove("purple")
+        document.getElementById("8").classList.remove("alreadyChosen")
+        document.getElementById("8").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("9").classList.remove("red")
+        document.getElementById("9").classList.remove("purple")
+        document.getElementById("9").classList.remove("alreadyChosen")
+        document.getElementById("9").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("10").classList.remove("red")
+        document.getElementById("10").classList.remove("purple")
+        document.getElementById("10").classList.remove("alreadyChosen")
+        document.getElementById("10").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("11").classList.remove("red")
+        document.getElementById("11").classList.remove("purple")
+        document.getElementById("11").classList.remove("alreadyChosen")
+        document.getElementById("11").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("12").classList.remove("red")
+        document.getElementById("12").classList.remove("purple")
+        document.getElementById("12").classList.remove("alreadyChosen")
+        document.getElementById("12").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("13").classList.remove("red")
+        document.getElementById("13").classList.remove("purple")
+        document.getElementById("13").classList.remove("alreadyChosen")
+        document.getElementById("13").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("14").classList.remove("red")
+        document.getElementById("14").classList.remove("purple")
+        document.getElementById("14").classList.remove("alreadyChosen")
+        document.getElementById("14").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("15").classList.remove("red")
+        document.getElementById("15").classList.remove("purple")
+        document.getElementById("15").classList.remove("alreadyChosen")
+        document.getElementById("15").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("16").classList.remove("red")
+        document.getElementById("16").classList.remove("purple")
+        document.getElementById("16").classList.remove("alreadyChosen")
+        document.getElementById("16").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("17").classList.remove("red")
+        document.getElementById("17").classList.remove("purple")
+        document.getElementById("17").classList.remove("alreadyChosen")
+        document.getElementById("17").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("18").classList.remove("red")
+        document.getElementById("18").classList.remove("purple")
+        document.getElementById("18").classList.remove("alreadyChosen")
+        document.getElementById("18").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("19").classList.remove("red")
+        document.getElementById("19").classList.remove("purple")
+        document.getElementById("19").classList.remove("alreadyChosen")
+        document.getElementById("19").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("20").classList.remove("red")
+        document.getElementById("20").classList.remove("purple")
+        document.getElementById("20").classList.remove("alreadyChosen")
+        document.getElementById("20").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("21").classList.remove("red")
+        document.getElementById("21").classList.remove("purple")
+        document.getElementById("21").classList.remove("alreadyChosen")
+        document.getElementById("21").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("22").classList.remove("red")
+        document.getElementById("22").classList.remove("purple")
+        document.getElementById("22").classList.remove("alreadyChosen")
+        document.getElementById("22").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("23").classList.remove("red")
+        document.getElementById("23").classList.remove("purple")
+        document.getElementById("23").classList.remove("alreadyChosen")
+        document.getElementById("23").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("24").classList.remove("red")
+        document.getElementById("24").classList.remove("purple")
+        document.getElementById("24").classList.remove("alreadyChosen")
+        document.getElementById("24").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("25").classList.remove("red")
+        document.getElementById("25").classList.remove("purple")
+        document.getElementById("25").classList.remove("alreadyChosen")
+        document.getElementById("25").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("26").classList.remove("red")
+        document.getElementById("26").classList.remove("purple")
+        document.getElementById("26").classList.remove("alreadyChosen")
+        document.getElementById("26").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("27").classList.remove("red")
+        document.getElementById("27").classList.remove("purple")
+        document.getElementById("27").classList.remove("alreadyChosen")
+        document.getElementById("27").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("28").classList.remove("red")
+        document.getElementById("28").classList.remove("purple")
+        document.getElementById("28").classList.remove("alreadyChosen")
+        document.getElementById("28").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("29").classList.remove("red")
+        document.getElementById("29").classList.remove("purple")
+        document.getElementById("29").classList.remove("alreadyChosen")
+        document.getElementById("29").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("30").classList.remove("red")
+        document.getElementById("30").classList.remove("purple")
+        document.getElementById("30").classList.remove("alreadyChosen")
+        document.getElementById("30").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("31").classList.remove("red")
+        document.getElementById("31").classList.remove("purple")
+        document.getElementById("31").classList.remove("alreadyChosen")
+        document.getElementById("31").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("32").classList.remove("red")
+        document.getElementById("32").classList.remove("purple")
+        document.getElementById("32").classList.remove("alreadyChosen")
+        document.getElementById("32").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("33").classList.remove("red")
+        document.getElementById("33").classList.remove("purple")
+        document.getElementById("33").classList.remove("alreadyChosen")
+        document.getElementById("33").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("34").classList.remove("red")
+        document.getElementById("34").classList.remove("purple")
+        document.getElementById("34").classList.remove("alreadyChosen")
+        document.getElementById("34").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("35").classList.remove("red")
+        document.getElementById("35").classList.remove("purple")
+        document.getElementById("35").classList.remove("alreadyChosen")
+        document.getElementById("35").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("36").classList.remove("red")
+        document.getElementById("36").classList.remove("purple")
+        document.getElementById("36").classList.remove("alreadyChosen")
+        document.getElementById("36").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("37").classList.remove("red")
+        document.getElementById("37").classList.remove("purple")
+        document.getElementById("37").classList.remove("alreadyChosen")
+        document.getElementById("37").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("38").classList.remove("red")
+        document.getElementById("38").classList.remove("purple")
+        document.getElementById("38").classList.remove("alreadyChosen")
+        document.getElementById("38").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("39").classList.remove("red")
+        document.getElementById("39").classList.remove("purple")
+        document.getElementById("39").classList.remove("alreadyChosen")
+        document.getElementById("39").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("40").classList.remove("red")
+        document.getElementById("40").classList.remove("purple")
+        document.getElementById("40").classList.remove("alreadyChosen")
+        document.getElementById("40").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("41").classList.remove("red")
+        document.getElementById("41").classList.remove("purple")
+        document.getElementById("41").classList.remove("alreadyChosen")
+        document.getElementById("41").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("42").classList.remove("red")
+        document.getElementById("42").classList.remove("purple")
+        document.getElementById("42").classList.remove("alreadyChosen")
+        document.getElementById("42").classList.add("lowestAvailableCellInColumn")
+
+        playerTurn = undefined;
+    } else if (
+        //COLUMN 1
+        (document.getElementById("1").classList.contains("purple") && document.getElementById("2").classList.contains("purple") && 
+        document.getElementById("3").classList.contains("purple") && document.getElementById("4").classList.contains("purple")) ||
+
+        (document.getElementById("2").classList.contains("purple") && document.getElementById("3").classList.contains("purple") && 
+        document.getElementById("4").classList.contains("purple") && document.getElementById("5").classList.contains("purple")) ||
+
+        (document.getElementById("3").classList.contains("purple") && document.getElementById("4").classList.contains("purple") && 
+        document.getElementById("5").classList.contains("purple") && document.getElementById("6").classList.contains("purple")) ||
+
+        //COLUMN 2
+        (document.getElementById("7").classList.contains("purple") && document.getElementById("8").classList.contains("purple") && 
+        document.getElementById("9").classList.contains("purple") && document.getElementById("10").classList.contains("purple")) ||
+
+        (document.getElementById("8").classList.contains("purple") && document.getElementById("9").classList.contains("purple") && 
+        document.getElementById("10").classList.contains("purple") && document.getElementById("11").classList.contains("purple"))||
+        
+        (document.getElementById("9").classList.contains("purple") && document.getElementById("10").classList.contains("purple") && 
+        document.getElementById("11").classList.contains("purple") && document.getElementById("12").classList.contains("purple")) ||
+
+        //COLUMN 3
+        (document.getElementById("13").classList.contains("purple") && document.getElementById("14").classList.contains("purple") && 
+        document.getElementById("15").classList.contains("purple") && document.getElementById("16").classList.contains("purple")) ||
+
+        (document.getElementById("14").classList.contains("purple") && document.getElementById("15").classList.contains("purple") && 
+        document.getElementById("16").classList.contains("purple") && document.getElementById("17").classList.contains("purple")) ||
+
+        (document.getElementById("15").classList.contains("purple") && document.getElementById("16").classList.contains("purple") && 
+        document.getElementById("17").classList.contains("purple") && document.getElementById("18").classList.contains("purple")) ||
+
+        //COLUMN 4
+        (document.getElementById("19").classList.contains("purple") && document.getElementById("20").classList.contains("purple") && 
+        document.getElementById("21").classList.contains("purple") && document.getElementById("22").classList.contains("purple")) ||
+
+        (document.getElementById("20").classList.contains("purple") && document.getElementById("21").classList.contains("purple") && 
+        document.getElementById("22").classList.contains("purple") && document.getElementById("23").classList.contains("purple")) ||
+
+        (document.getElementById("21").classList.contains("purple") && document.getElementById("22").classList.contains("purple") && 
+        document.getElementById("23").classList.contains("purple") && document.getElementById("24").classList.contains("purple")) ||
+
+        //COLUMN 5
+        (document.getElementById("25").classList.contains("purple") && document.getElementById("26").classList.contains("purple") && 
+        document.getElementById("27").classList.contains("purple") && document.getElementById("28").classList.contains("purple")) ||
+
+        (document.getElementById("26").classList.contains("purple") && document.getElementById("27").classList.contains("purple") && 
+        document.getElementById("28").classList.contains("purple") && document.getElementById("29").classList.contains("purple")) ||
+
+        (document.getElementById("27").classList.contains("purple") && document.getElementById("28").classList.contains("purple") && 
+        document.getElementById("29").classList.contains("purple") && document.getElementById("30").classList.contains("purple")) ||
+
+        //COLUMN 6
+        (document.getElementById("31").classList.contains("purple") && document.getElementById("32").classList.contains("purple") && 
+        document.getElementById("33").classList.contains("purple") && document.getElementById("34").classList.contains("purple")) ||
+
+        (document.getElementById("32").classList.contains("purple") && document.getElementById("33").classList.contains("purple") && 
+        document.getElementById("34").classList.contains("purple") && document.getElementById("35").classList.contains("purple")) ||
+
+        (document.getElementById("33").classList.contains("purple") && document.getElementById("34").classList.contains("purple") && 
+        document.getElementById("35").classList.contains("purple") && document.getElementById("36").classList.contains("purple")) ||
+
+        //COLUMN 7
+        (document.getElementById("37").classList.contains("purple") && document.getElementById("38").classList.contains("purple") && 
+        document.getElementById("39").classList.contains("purple") && document.getElementById("40").classList.contains("purple")) ||
+
+        (document.getElementById("38").classList.contains("purple") && document.getElementById("39").classList.contains("purple") && 
+        document.getElementById("40").classList.contains("purple") && document.getElementById("41").classList.contains("purple")) ||
+
+        (document.getElementById("39").classList.contains("purple") && document.getElementById("40").classList.contains("purple") && 
+        document.getElementById("41").classList.contains("purple") && document.getElementById("42").classList.contains("purple")) ||
+
+        //ROW 1
+        (document.getElementById("1").classList.contains("purple") && document.getElementById("7").classList.contains("purple") && 
+        document.getElementById("13").classList.contains("purple") && document.getElementById("19").classList.contains("purple")) ||
+
+        (document.getElementById("7").classList.contains("purple") && document.getElementById("13").classList.contains("purple") && 
+        document.getElementById("19").classList.contains("purple") && document.getElementById("25").classList.contains("purple")) ||
+
+        (document.getElementById("13").classList.contains("purple") && document.getElementById("19").classList.contains("purple") && 
+        document.getElementById("25").classList.contains("purple") && document.getElementById("31").classList.contains("purple")) ||
+
+        (document.getElementById("19").classList.contains("purple") && document.getElementById("25").classList.contains("purple") && 
+        document.getElementById("31").classList.contains("purple") && document.getElementById("37").classList.contains("purple")) ||
+
+        //ROW 2
+        (document.getElementById("2").classList.contains("purple") && document.getElementById("8").classList.contains("purple") && 
+        document.getElementById("14").classList.contains("purple") && document.getElementById("20").classList.contains("purple")) ||
+
+        (document.getElementById("8").classList.contains("purple") && document.getElementById("14").classList.contains("purple") && 
+        document.getElementById("20").classList.contains("purple") && document.getElementById("26").classList.contains("purple")) ||
+
+        (document.getElementById("14").classList.contains("purple") && document.getElementById("20").classList.contains("purple") && 
+        document.getElementById("26").classList.contains("purple") && document.getElementById("32").classList.contains("purple")) ||
+
+        (document.getElementById("20").classList.contains("purple") && document.getElementById("26").classList.contains("purple") && 
+        document.getElementById("32").classList.contains("purple") && document.getElementById("38").classList.contains("purple")) ||
+
+        //ROW 3
+        (document.getElementById("3").classList.contains("purple") && document.getElementById("9").classList.contains("purple") && 
+        document.getElementById("15").classList.contains("purple") && document.getElementById("21").classList.contains("purple")) ||
+
+        (document.getElementById("9").classList.contains("purple") && document.getElementById("15").classList.contains("purple") && 
+        document.getElementById("21").classList.contains("purple") && document.getElementById("27").classList.contains("purple")) ||
+
+        (document.getElementById("15").classList.contains("purple") && document.getElementById("21").classList.contains("purple") && 
+        document.getElementById("27").classList.contains("purple") && document.getElementById("33").classList.contains("purple")) ||
+
+        (document.getElementById("21").classList.contains("purple") && document.getElementById("27").classList.contains("purple") && 
+        document.getElementById("33").classList.contains("purple") && document.getElementById("39").classList.contains("purple")) ||
+
+        //ROW 4
+        (document.getElementById("4").classList.contains("purple") && document.getElementById("10").classList.contains("purple") && 
+        document.getElementById("16").classList.contains("purple") && document.getElementById("22").classList.contains("purple")) ||
+
+        (document.getElementById("10").classList.contains("purple") && document.getElementById("16").classList.contains("purple") && 
+        document.getElementById("22").classList.contains("purple") && document.getElementById("28").classList.contains("purple")) ||
+
+        (document.getElementById("16").classList.contains("purple") && document.getElementById("22").classList.contains("purple") && 
+        document.getElementById("28").classList.contains("purple") && document.getElementById("34").classList.contains("purple")) ||
+
+        (document.getElementById("22").classList.contains("purple") && document.getElementById("28").classList.contains("purple") && 
+        document.getElementById("34").classList.contains("purple") && document.getElementById("40").classList.contains("purple")) ||
+
+        //ROW 5
+        (document.getElementById("5").classList.contains("purple") && document.getElementById("11").classList.contains("purple") && 
+        document.getElementById("17").classList.contains("purple") && document.getElementById("23").classList.contains("purple")) ||
+
+        (document.getElementById("11").classList.contains("purple") && document.getElementById("17").classList.contains("purple") && 
+        document.getElementById("23").classList.contains("purple") && document.getElementById("29").classList.contains("purple")) ||
+
+        (document.getElementById("17").classList.contains("purple") && document.getElementById("23").classList.contains("purple") && 
+        document.getElementById("29").classList.contains("purple") && document.getElementById("35").classList.contains("purple")) ||
+
+        (document.getElementById("23").classList.contains("purple") && document.getElementById("29").classList.contains("purple") && 
+        document.getElementById("35").classList.contains("purple") && document.getElementById("41").classList.contains("purple")) ||
+
+        //ROW 6
+        (document.getElementById("6").classList.contains("purple") && document.getElementById("12").classList.contains("purple") && 
+        document.getElementById("18").classList.contains("purple") && document.getElementById("24").classList.contains("purple")) ||
+
+        (document.getElementById("12").classList.contains("purple") && document.getElementById("18").classList.contains("purple") && 
+        document.getElementById("24").classList.contains("purple") && document.getElementById("30").classList.contains("purple")) ||
+
+        (document.getElementById("18").classList.contains("purple") && document.getElementById("24").classList.contains("purple") && 
+        document.getElementById("30").classList.contains("purple") && document.getElementById("36").classList.contains("purple")) ||
+
+        (document.getElementById("24").classList.contains("purple") && document.getElementById("30").classList.contains("purple") && 
+        document.getElementById("36").classList.contains("purple") && document.getElementById("42").classList.contains("purple")) ||
+
+        //DIAGONAL FROM BOTTOM LEFT CORNER (WORKING UP COLUMN 1)
+        (document.getElementById("3").classList.contains("purple") && document.getElementById("10").classList.contains("purple") && 
+        document.getElementById("17").classList.contains("purple") && document.getElementById("24").classList.contains("purple")) ||
+
+        (document.getElementById("2").classList.contains("purple") && document.getElementById("9").classList.contains("purple") && 
+        document.getElementById("16").classList.contains("purple") && document.getElementById("23").classList.contains("purple")) ||
+
+        (document.getElementById("9").classList.contains("purple") && document.getElementById("16").classList.contains("purple") && 
+        document.getElementById("23").classList.contains("purple") && document.getElementById("30").classList.contains("purple")) ||
+
+        (document.getElementById("1").classList.contains("purple") && document.getElementById("8").classList.contains("purple") && 
+        document.getElementById("15").classList.contains("purple") && document.getElementById("22").classList.contains("purple")) ||
+
+        (document.getElementById("8").classList.contains("purple") && document.getElementById("15").classList.contains("purple") && 
+        document.getElementById("22").classList.contains("purple") && document.getElementById("29").classList.contains("purple")) ||
+
+        (document.getElementById("15").classList.contains("purple") && document.getElementById("22").classList.contains("purple") && 
+        document.getElementById("29").classList.contains("purple") && document.getElementById("36").classList.contains("purple")) ||
+
+        //DIAGONAL FROM BOTTOM LEFT CORNER (WORKING ACROSS ROW 1 LEFT TO RIGHT)
+        (document.getElementById("7").classList.contains("purple") && document.getElementById("14").classList.contains("purple") && 
+        document.getElementById("21").classList.contains("purple") && document.getElementById("28").classList.contains("purple")) ||
+
+        (document.getElementById("14").classList.contains("purple") && document.getElementById("21").classList.contains("purple") && 
+        document.getElementById("28").classList.contains("purple") && document.getElementById("35").classList.contains("purple")) ||
+
+        (document.getElementById("21").classList.contains("purple") && document.getElementById("28").classList.contains("purple") && 
+        document.getElementById("35").classList.contains("purple") && document.getElementById("42").classList.contains("purple")) ||
+
+        (document.getElementById("13").classList.contains("purple") && document.getElementById("20").classList.contains("purple") && 
+        document.getElementById("27").classList.contains("purple") && document.getElementById("34").classList.contains("purple")) ||
+
+        (document.getElementById("20").classList.contains("purple") && document.getElementById("27").classList.contains("purple") && 
+        document.getElementById("34").classList.contains("purple") && document.getElementById("41").classList.contains("purple")) ||
+
+        (document.getElementById("19").classList.contains("purple") && document.getElementById("26").classList.contains("purple") && 
+        document.getElementById("33").classList.contains("purple") && document.getElementById("40").classList.contains("purple")) ||
+
+        //DIAGONAL FROM BOTTOM RIGHT CORNER (WORKING UP COLUMN 7)
+        (document.getElementById("39").classList.contains("purple") && document.getElementById("34").classList.contains("purple") && 
+        document.getElementById("29").classList.contains("purple") && document.getElementById("24").classList.contains("purple")) ||
+
+        (document.getElementById("38").classList.contains("purple") && document.getElementById("33").classList.contains("purple") && 
+        document.getElementById("28").classList.contains("purple") && document.getElementById("23").classList.contains("purple")) ||
+
+        (document.getElementById("33").classList.contains("purple") && document.getElementById("28").classList.contains("purple") && 
+        document.getElementById("23").classList.contains("purple") && document.getElementById("18").classList.contains("purple")) ||
+
+        (document.getElementById("37").classList.contains("purple") && document.getElementById("32").classList.contains("purple") && 
+        document.getElementById("27").classList.contains("purple") && document.getElementById("22").classList.contains("purple")) ||
+
+        (document.getElementById("32").classList.contains("purple") && document.getElementById("27").classList.contains("purple") && 
+        document.getElementById("22").classList.contains("purple") && document.getElementById("17").classList.contains("purple")) ||
+
+        (document.getElementById("27").classList.contains("purple") && document.getElementById("22").classList.contains("purple") && 
+        document.getElementById("17").classList.contains("purple") && document.getElementById("12").classList.contains("purple")) ||
+
+        //DIAGONAL FROM BOTTOM RIGHT CORNER (WORKING ACROSS ROW 1 FROM RIGHT TO LEFT)
+        (document.getElementById("31").classList.contains("purple") && document.getElementById("26").classList.contains("purple") && 
+        document.getElementById("21").classList.contains("purple") && document.getElementById("16").classList.contains("purple")) ||
+
+        (document.getElementById("26").classList.contains("purple") && document.getElementById("21").classList.contains("purple") && 
+        document.getElementById("16").classList.contains("purple") && document.getElementById("11").classList.contains("purple")) ||
+
+        (document.getElementById("21").classList.contains("purple") && document.getElementById("16").classList.contains("purple") && 
+        document.getElementById("11").classList.contains("purple") && document.getElementById("6").classList.contains("purple")) ||
+
+        (document.getElementById("25").classList.contains("purple") && document.getElementById("20").classList.contains("purple") && 
+        document.getElementById("15").classList.contains("purple") && document.getElementById("10").classList.contains("purple")) ||
+
+        (document.getElementById("20").classList.contains("purple") && document.getElementById("15").classList.contains("purple") && 
+        document.getElementById("10").classList.contains("purple") && document.getElementById("5").classList.contains("purple")) ||
+
+        (document.getElementById("19").classList.contains("purple") && document.getElementById("14").classList.contains("purple") && 
+        document.getElementById("9").classList.contains("purple") && document.getElementById("4").classList.contains("purple")) 
+    ){
+        alert(player2Name.textContent+" Wins!")
+        document.getElementById("1").classList.remove("red")
+        document.getElementById("1").classList.remove("purple")
+        document.getElementById("1").classList.remove("alreadyChosen")
+        document.getElementById("1").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("2").classList.remove("red")
+        document.getElementById("2").classList.remove("purple")
+        document.getElementById("2").classList.remove("alreadyChosen")
+        document.getElementById("2").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("3").classList.remove("red")
+        document.getElementById("3").classList.remove("purple")
+        document.getElementById("3").classList.remove("alreadyChosen")
+        document.getElementById("3").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("4").classList.remove("red")
+        document.getElementById("4").classList.remove("purple")
+        document.getElementById("4").classList.remove("alreadyChosen")
+        document.getElementById("4").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("5").classList.remove("red")
+        document.getElementById("5").classList.remove("purple")
+        document.getElementById("5").classList.remove("alreadyChosen")
+        document.getElementById("5").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("6").classList.remove("red")
+        document.getElementById("6").classList.remove("purple")
+        document.getElementById("6").classList.remove("alreadyChosen")
+        document.getElementById("6").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("7").classList.remove("red")
+        document.getElementById("7").classList.remove("purple")
+        document.getElementById("7").classList.remove("alreadyChosen")
+        document.getElementById("7").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("8").classList.remove("red")
+        document.getElementById("8").classList.remove("purple")
+        document.getElementById("8").classList.remove("alreadyChosen")
+        document.getElementById("8").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("9").classList.remove("red")
+        document.getElementById("9").classList.remove("purple")
+        document.getElementById("9").classList.remove("alreadyChosen")
+        document.getElementById("9").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("10").classList.remove("red")
+        document.getElementById("10").classList.remove("purple")
+        document.getElementById("10").classList.remove("alreadyChosen")
+        document.getElementById("10").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("11").classList.remove("red")
+        document.getElementById("11").classList.remove("purple")
+        document.getElementById("11").classList.remove("alreadyChosen")
+        document.getElementById("11").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("12").classList.remove("red")
+        document.getElementById("12").classList.remove("purple")
+        document.getElementById("12").classList.remove("alreadyChosen")
+        document.getElementById("12").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("13").classList.remove("red")
+        document.getElementById("13").classList.remove("purple")
+        document.getElementById("13").classList.remove("alreadyChosen")
+        document.getElementById("13").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("14").classList.remove("red")
+        document.getElementById("14").classList.remove("purple")
+        document.getElementById("14").classList.remove("alreadyChosen")
+        document.getElementById("14").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("15").classList.remove("red")
+        document.getElementById("15").classList.remove("purple")
+        document.getElementById("15").classList.remove("alreadyChosen")
+        document.getElementById("15").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("16").classList.remove("red")
+        document.getElementById("16").classList.remove("purple")
+        document.getElementById("16").classList.remove("alreadyChosen")
+        document.getElementById("16").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("17").classList.remove("red")
+        document.getElementById("17").classList.remove("purple")
+        document.getElementById("17").classList.remove("alreadyChosen")
+        document.getElementById("17").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("18").classList.remove("red")
+        document.getElementById("18").classList.remove("purple")
+        document.getElementById("18").classList.remove("alreadyChosen")
+        document.getElementById("18").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("19").classList.remove("red")
+        document.getElementById("19").classList.remove("purple")
+        document.getElementById("19").classList.remove("alreadyChosen")
+        document.getElementById("19").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("20").classList.remove("red")
+        document.getElementById("20").classList.remove("purple")
+        document.getElementById("20").classList.remove("alreadyChosen")
+        document.getElementById("20").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("21").classList.remove("red")
+        document.getElementById("21").classList.remove("purple")
+        document.getElementById("21").classList.remove("alreadyChosen")
+        document.getElementById("21").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("22").classList.remove("red")
+        document.getElementById("22").classList.remove("purple")
+        document.getElementById("22").classList.remove("alreadyChosen")
+        document.getElementById("22").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("23").classList.remove("red")
+        document.getElementById("23").classList.remove("purple")
+        document.getElementById("23").classList.remove("alreadyChosen")
+        document.getElementById("23").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("24").classList.remove("red")
+        document.getElementById("24").classList.remove("purple")
+        document.getElementById("24").classList.remove("alreadyChosen")
+        document.getElementById("24").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("25").classList.remove("red")
+        document.getElementById("25").classList.remove("purple")
+        document.getElementById("25").classList.remove("alreadyChosen")
+        document.getElementById("25").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("26").classList.remove("red")
+        document.getElementById("26").classList.remove("purple")
+        document.getElementById("26").classList.remove("alreadyChosen")
+        document.getElementById("26").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("27").classList.remove("red")
+        document.getElementById("27").classList.remove("purple")
+        document.getElementById("27").classList.remove("alreadyChosen")
+        document.getElementById("27").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("28").classList.remove("red")
+        document.getElementById("28").classList.remove("purple")
+        document.getElementById("28").classList.remove("alreadyChosen")
+        document.getElementById("28").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("29").classList.remove("red")
+        document.getElementById("29").classList.remove("purple")
+        document.getElementById("29").classList.remove("alreadyChosen")
+        document.getElementById("29").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("30").classList.remove("red")
+        document.getElementById("30").classList.remove("purple")
+        document.getElementById("30").classList.remove("alreadyChosen")
+        document.getElementById("30").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("31").classList.remove("red")
+        document.getElementById("31").classList.remove("purple")
+        document.getElementById("31").classList.remove("alreadyChosen")
+        document.getElementById("31").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("32").classList.remove("red")
+        document.getElementById("32").classList.remove("purple")
+        document.getElementById("32").classList.remove("alreadyChosen")
+        document.getElementById("32").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("33").classList.remove("red")
+        document.getElementById("33").classList.remove("purple")
+        document.getElementById("33").classList.remove("alreadyChosen")
+        document.getElementById("33").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("34").classList.remove("red")
+        document.getElementById("34").classList.remove("purple")
+        document.getElementById("34").classList.remove("alreadyChosen")
+        document.getElementById("34").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("35").classList.remove("red")
+        document.getElementById("35").classList.remove("purple")
+        document.getElementById("35").classList.remove("alreadyChosen")
+        document.getElementById("35").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("36").classList.remove("red")
+        document.getElementById("36").classList.remove("purple")
+        document.getElementById("36").classList.remove("alreadyChosen")
+        document.getElementById("36").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("37").classList.remove("red")
+        document.getElementById("37").classList.remove("purple")
+        document.getElementById("37").classList.remove("alreadyChosen")
+        document.getElementById("37").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("38").classList.remove("red")
+        document.getElementById("38").classList.remove("purple")
+        document.getElementById("38").classList.remove("alreadyChosen")
+        document.getElementById("38").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("39").classList.remove("red")
+        document.getElementById("39").classList.remove("purple")
+        document.getElementById("39").classList.remove("alreadyChosen")
+        document.getElementById("39").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("40").classList.remove("red")
+        document.getElementById("40").classList.remove("purple")
+        document.getElementById("40").classList.remove("alreadyChosen")
+        document.getElementById("40").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("41").classList.remove("red")
+        document.getElementById("41").classList.remove("purple")
+        document.getElementById("41").classList.remove("alreadyChosen")
+        document.getElementById("41").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("42").classList.remove("red")
+        document.getElementById("42").classList.remove("purple")
+        document.getElementById("42").classList.remove("alreadyChosen")
+        document.getElementById("42").classList.add("lowestAvailableCellInColumn")
+
+        playerTurn = undefined;
+    }
+    //setting up reset for if board fills up and no one has connected 4
+    else if(
+        (document.getElementById("1").classList.contains("red") || document.getElementById("1").classList.contains("purple")) &&
+        (document.getElementById("2").classList.contains("red") || document.getElementById("2").classList.contains("purple")) &&
+        (document.getElementById("3").classList.contains("red") || document.getElementById("3").classList.contains("purple")) &&
+        (document.getElementById("4").classList.contains("red") || document.getElementById("4").classList.contains("purple")) &&
+        (document.getElementById("5").classList.contains("red") || document.getElementById("5").classList.contains("purple")) &&
+        (document.getElementById("6").classList.contains("red") || document.getElementById("6").classList.contains("purple")) &&
+        (document.getElementById("7").classList.contains("red") || document.getElementById("7").classList.contains("purple")) &&
+        (document.getElementById("8").classList.contains("red") || document.getElementById("8").classList.contains("purple")) &&
+        (document.getElementById("9").classList.contains("red") || document.getElementById("9").classList.contains("purple")) &&
+        (document.getElementById("10").classList.contains("red") || document.getElementById("10").classList.contains("purple")) &&
+        (document.getElementById("11").classList.contains("red") || document.getElementById("11").classList.contains("purple")) &&
+        (document.getElementById("12").classList.contains("red") || document.getElementById("12").classList.contains("purple")) &&
+        (document.getElementById("13").classList.contains("red") || document.getElementById("13").classList.contains("purple")) &&
+        (document.getElementById("14").classList.contains("red") || document.getElementById("14").classList.contains("purple")) &&
+        (document.getElementById("15").classList.contains("red") || document.getElementById("15").classList.contains("purple")) &&
+        (document.getElementById("16").classList.contains("red") || document.getElementById("16").classList.contains("purple")) &&
+        (document.getElementById("17").classList.contains("red") || document.getElementById("17").classList.contains("purple")) &&
+        (document.getElementById("18").classList.contains("red") || document.getElementById("18").classList.contains("purple")) &&
+        (document.getElementById("19").classList.contains("red") || document.getElementById("19").classList.contains("purple")) &&
+        (document.getElementById("20").classList.contains("red") || document.getElementById("20").classList.contains("purple")) &&
+        (document.getElementById("21").classList.contains("red") || document.getElementById("21").classList.contains("purple")) &&
+        (document.getElementById("22").classList.contains("red") || document.getElementById("22").classList.contains("purple")) &&
+        (document.getElementById("23").classList.contains("red") || document.getElementById("23").classList.contains("purple")) &&
+        (document.getElementById("24").classList.contains("red") || document.getElementById("24").classList.contains("purple")) &&
+        (document.getElementById("25").classList.contains("red") || document.getElementById("25").classList.contains("purple")) &&
+        (document.getElementById("26").classList.contains("red") || document.getElementById("26").classList.contains("purple")) &&
+        (document.getElementById("27").classList.contains("red") || document.getElementById("27").classList.contains("purple")) &&
+        (document.getElementById("28").classList.contains("red") || document.getElementById("28").classList.contains("purple")) &&
+        (document.getElementById("29").classList.contains("red") || document.getElementById("29").classList.contains("purple")) &&
+        (document.getElementById("30").classList.contains("red") || document.getElementById("30").classList.contains("purple")) &&
+        (document.getElementById("31").classList.contains("red") || document.getElementById("31").classList.contains("purple")) &&
+        (document.getElementById("32").classList.contains("red") || document.getElementById("32").classList.contains("purple")) &&
+        (document.getElementById("33").classList.contains("red") || document.getElementById("33").classList.contains("purple")) &&
+        (document.getElementById("34").classList.contains("red") || document.getElementById("34").classList.contains("purple")) &&
+        (document.getElementById("35").classList.contains("red") || document.getElementById("35").classList.contains("purple")) &&
+        (document.getElementById("36").classList.contains("red") || document.getElementById("36").classList.contains("purple")) &&
+        (document.getElementById("37").classList.contains("red") || document.getElementById("37").classList.contains("purple")) &&
+        (document.getElementById("38").classList.contains("red") || document.getElementById("38").classList.contains("purple")) &&
+        (document.getElementById("39").classList.contains("red") || document.getElementById("39").classList.contains("purple")) &&
+        (document.getElementById("40").classList.contains("red") || document.getElementById("40").classList.contains("purple")) &&
+        (document.getElementById("41").classList.contains("red") || document.getElementById("41").classList.contains("purple")) &&
+        (document.getElementById("42").classList.contains("red") || document.getElementById("42").classList.contains("purple"))
+        ){
+            alert("You somehow managed to fill up the entire board without either player winning. Bravo, that's a feat in and of itself. Resetting the board now.")
+        document.getElementById("1").classList.remove("red")
+        document.getElementById("1").classList.remove("purple")
+        document.getElementById("1").classList.remove("alreadyChosen")
+        document.getElementById("1").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("2").classList.remove("red")
+        document.getElementById("2").classList.remove("purple")
+        document.getElementById("2").classList.remove("alreadyChosen")
+        document.getElementById("2").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("3").classList.remove("red")
+        document.getElementById("3").classList.remove("purple")
+        document.getElementById("3").classList.remove("alreadyChosen")
+        document.getElementById("3").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("4").classList.remove("red")
+        document.getElementById("4").classList.remove("purple")
+        document.getElementById("4").classList.remove("alreadyChosen")
+        document.getElementById("4").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("5").classList.remove("red")
+        document.getElementById("5").classList.remove("purple")
+        document.getElementById("5").classList.remove("alreadyChosen")
+        document.getElementById("5").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("6").classList.remove("red")
+        document.getElementById("6").classList.remove("purple")
+        document.getElementById("6").classList.remove("alreadyChosen")
+        document.getElementById("6").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("7").classList.remove("red")
+        document.getElementById("7").classList.remove("purple")
+        document.getElementById("7").classList.remove("alreadyChosen")
+        document.getElementById("7").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("8").classList.remove("red")
+        document.getElementById("8").classList.remove("purple")
+        document.getElementById("8").classList.remove("alreadyChosen")
+        document.getElementById("8").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("9").classList.remove("red")
+        document.getElementById("9").classList.remove("purple")
+        document.getElementById("9").classList.remove("alreadyChosen")
+        document.getElementById("9").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("10").classList.remove("red")
+        document.getElementById("10").classList.remove("purple")
+        document.getElementById("10").classList.remove("alreadyChosen")
+        document.getElementById("10").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("11").classList.remove("red")
+        document.getElementById("11").classList.remove("purple")
+        document.getElementById("11").classList.remove("alreadyChosen")
+        document.getElementById("11").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("12").classList.remove("red")
+        document.getElementById("12").classList.remove("purple")
+        document.getElementById("12").classList.remove("alreadyChosen")
+        document.getElementById("12").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("13").classList.remove("red")
+        document.getElementById("13").classList.remove("purple")
+        document.getElementById("13").classList.remove("alreadyChosen")
+        document.getElementById("13").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("14").classList.remove("red")
+        document.getElementById("14").classList.remove("purple")
+        document.getElementById("14").classList.remove("alreadyChosen")
+        document.getElementById("14").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("15").classList.remove("red")
+        document.getElementById("15").classList.remove("purple")
+        document.getElementById("15").classList.remove("alreadyChosen")
+        document.getElementById("15").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("16").classList.remove("red")
+        document.getElementById("16").classList.remove("purple")
+        document.getElementById("16").classList.remove("alreadyChosen")
+        document.getElementById("16").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("17").classList.remove("red")
+        document.getElementById("17").classList.remove("purple")
+        document.getElementById("17").classList.remove("alreadyChosen")
+        document.getElementById("17").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("18").classList.remove("red")
+        document.getElementById("18").classList.remove("purple")
+        document.getElementById("18").classList.remove("alreadyChosen")
+        document.getElementById("18").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("19").classList.remove("red")
+        document.getElementById("19").classList.remove("purple")
+        document.getElementById("19").classList.remove("alreadyChosen")
+        document.getElementById("19").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("20").classList.remove("red")
+        document.getElementById("20").classList.remove("purple")
+        document.getElementById("20").classList.remove("alreadyChosen")
+        document.getElementById("20").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("21").classList.remove("red")
+        document.getElementById("21").classList.remove("purple")
+        document.getElementById("21").classList.remove("alreadyChosen")
+        document.getElementById("21").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("22").classList.remove("red")
+        document.getElementById("22").classList.remove("purple")
+        document.getElementById("22").classList.remove("alreadyChosen")
+        document.getElementById("22").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("23").classList.remove("red")
+        document.getElementById("23").classList.remove("purple")
+        document.getElementById("23").classList.remove("alreadyChosen")
+        document.getElementById("23").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("24").classList.remove("red")
+        document.getElementById("24").classList.remove("purple")
+        document.getElementById("24").classList.remove("alreadyChosen")
+        document.getElementById("24").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("25").classList.remove("red")
+        document.getElementById("25").classList.remove("purple")
+        document.getElementById("25").classList.remove("alreadyChosen")
+        document.getElementById("25").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("26").classList.remove("red")
+        document.getElementById("26").classList.remove("purple")
+        document.getElementById("26").classList.remove("alreadyChosen")
+        document.getElementById("26").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("27").classList.remove("red")
+        document.getElementById("27").classList.remove("purple")
+        document.getElementById("27").classList.remove("alreadyChosen")
+        document.getElementById("27").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("28").classList.remove("red")
+        document.getElementById("28").classList.remove("purple")
+        document.getElementById("28").classList.remove("alreadyChosen")
+        document.getElementById("28").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("29").classList.remove("red")
+        document.getElementById("29").classList.remove("purple")
+        document.getElementById("29").classList.remove("alreadyChosen")
+        document.getElementById("29").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("30").classList.remove("red")
+        document.getElementById("30").classList.remove("purple")
+        document.getElementById("30").classList.remove("alreadyChosen")
+        document.getElementById("30").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("31").classList.remove("red")
+        document.getElementById("31").classList.remove("purple")
+        document.getElementById("31").classList.remove("alreadyChosen")
+        document.getElementById("31").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("32").classList.remove("red")
+        document.getElementById("32").classList.remove("purple")
+        document.getElementById("32").classList.remove("alreadyChosen")
+        document.getElementById("32").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("33").classList.remove("red")
+        document.getElementById("33").classList.remove("purple")
+        document.getElementById("33").classList.remove("alreadyChosen")
+        document.getElementById("33").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("34").classList.remove("red")
+        document.getElementById("34").classList.remove("purple")
+        document.getElementById("34").classList.remove("alreadyChosen")
+        document.getElementById("34").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("35").classList.remove("red")
+        document.getElementById("35").classList.remove("purple")
+        document.getElementById("35").classList.remove("alreadyChosen")
+        document.getElementById("35").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("36").classList.remove("red")
+        document.getElementById("36").classList.remove("purple")
+        document.getElementById("36").classList.remove("alreadyChosen")
+        document.getElementById("36").classList.add("lowestAvailableCellInColumn")
+
+        document.getElementById("37").classList.remove("red")
+        document.getElementById("37").classList.remove("purple")
+        document.getElementById("37").classList.remove("alreadyChosen")
+        document.getElementById("37").classList.remove("lowestAvailableCellInColumn")
+
+        document.getElementById("38").classList.remove("red")
+        document.getElementById("38").classList.remove("purple")
+        document.getElementById("38").classList.remove("alreadyChosen")
+        document.getElementById("38").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("39").classList.remove("red")
+        document.getElementById("39").classList.remove("purple")
+        document.getElementById("39").classList.remove("alreadyChosen")
+        document.getElementById("39").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("40").classList.remove("red")
+        document.getElementById("40").classList.remove("purple")
+        document.getElementById("40").classList.remove("alreadyChosen")
+        document.getElementById("40").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("41").classList.remove("red")
+        document.getElementById("41").classList.remove("purple")
+        document.getElementById("41").classList.remove("alreadyChosen")
+        document.getElementById("41").classList.remove("lowestAvailableCellInColumn")
+        
+        document.getElementById("42").classList.remove("red")
+        document.getElementById("42").classList.remove("purple")
+        document.getElementById("42").classList.remove("alreadyChosen")
+        document.getElementById("42").classList.add("lowestAvailableCellInColumn")
+
+        playerTurn = undefined;
+        }
+}
+
+//setting up reset button
+let resetButton = document.getElementById("reset")
+
+resetButton.addEventListener("click",resetGame)
+
+function resetGame(){
+    alert("The game has been reset.")
+    document.getElementById("1").classList.remove("red")
+    document.getElementById("1").classList.remove("purple")
+    document.getElementById("1").classList.remove("alreadyChosen")
+    document.getElementById("1").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("2").classList.remove("red")
+    document.getElementById("2").classList.remove("purple")
+    document.getElementById("2").classList.remove("alreadyChosen")
+    document.getElementById("2").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("3").classList.remove("red")
+    document.getElementById("3").classList.remove("purple")
+    document.getElementById("3").classList.remove("alreadyChosen")
+    document.getElementById("3").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("4").classList.remove("red")
+    document.getElementById("4").classList.remove("purple")
+    document.getElementById("4").classList.remove("alreadyChosen")
+    document.getElementById("4").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("5").classList.remove("red")
+    document.getElementById("5").classList.remove("purple")
+    document.getElementById("5").classList.remove("alreadyChosen")
+    document.getElementById("5").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("6").classList.remove("red")
+    document.getElementById("6").classList.remove("purple")
+    document.getElementById("6").classList.remove("alreadyChosen")
+    document.getElementById("6").classList.add("lowestAvailableCellInColumn")
+
+    document.getElementById("7").classList.remove("red")
+    document.getElementById("7").classList.remove("purple")
+    document.getElementById("7").classList.remove("alreadyChosen")
+    document.getElementById("7").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("8").classList.remove("red")
+    document.getElementById("8").classList.remove("purple")
+    document.getElementById("8").classList.remove("alreadyChosen")
+    document.getElementById("8").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("9").classList.remove("red")
+    document.getElementById("9").classList.remove("purple")
+    document.getElementById("9").classList.remove("alreadyChosen")
+    document.getElementById("9").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("10").classList.remove("red")
+    document.getElementById("10").classList.remove("purple")
+    document.getElementById("10").classList.remove("alreadyChosen")
+    document.getElementById("10").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("11").classList.remove("red")
+    document.getElementById("11").classList.remove("purple")
+    document.getElementById("11").classList.remove("alreadyChosen")
+    document.getElementById("11").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("12").classList.remove("red")
+    document.getElementById("12").classList.remove("purple")
+    document.getElementById("12").classList.remove("alreadyChosen")
+    document.getElementById("12").classList.add("lowestAvailableCellInColumn")
+
+    document.getElementById("13").classList.remove("red")
+    document.getElementById("13").classList.remove("purple")
+    document.getElementById("13").classList.remove("alreadyChosen")
+    document.getElementById("13").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("14").classList.remove("red")
+    document.getElementById("14").classList.remove("purple")
+    document.getElementById("14").classList.remove("alreadyChosen")
+    document.getElementById("14").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("15").classList.remove("red")
+    document.getElementById("15").classList.remove("purple")
+    document.getElementById("15").classList.remove("alreadyChosen")
+    document.getElementById("15").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("16").classList.remove("red")
+    document.getElementById("16").classList.remove("purple")
+    document.getElementById("16").classList.remove("alreadyChosen")
+    document.getElementById("16").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("17").classList.remove("red")
+    document.getElementById("17").classList.remove("purple")
+    document.getElementById("17").classList.remove("alreadyChosen")
+    document.getElementById("17").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("18").classList.remove("red")
+    document.getElementById("18").classList.remove("purple")
+    document.getElementById("18").classList.remove("alreadyChosen")
+    document.getElementById("18").classList.add("lowestAvailableCellInColumn")
+
+    document.getElementById("19").classList.remove("red")
+    document.getElementById("19").classList.remove("purple")
+    document.getElementById("19").classList.remove("alreadyChosen")
+    document.getElementById("19").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("20").classList.remove("red")
+    document.getElementById("20").classList.remove("purple")
+    document.getElementById("20").classList.remove("alreadyChosen")
+    document.getElementById("20").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("21").classList.remove("red")
+    document.getElementById("21").classList.remove("purple")
+    document.getElementById("21").classList.remove("alreadyChosen")
+    document.getElementById("21").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("22").classList.remove("red")
+    document.getElementById("22").classList.remove("purple")
+    document.getElementById("22").classList.remove("alreadyChosen")
+    document.getElementById("22").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("23").classList.remove("red")
+    document.getElementById("23").classList.remove("purple")
+    document.getElementById("23").classList.remove("alreadyChosen")
+    document.getElementById("23").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("24").classList.remove("red")
+    document.getElementById("24").classList.remove("purple")
+    document.getElementById("24").classList.remove("alreadyChosen")
+    document.getElementById("24").classList.add("lowestAvailableCellInColumn")
+
+    document.getElementById("25").classList.remove("red")
+    document.getElementById("25").classList.remove("purple")
+    document.getElementById("25").classList.remove("alreadyChosen")
+    document.getElementById("25").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("26").classList.remove("red")
+    document.getElementById("26").classList.remove("purple")
+    document.getElementById("26").classList.remove("alreadyChosen")
+    document.getElementById("26").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("27").classList.remove("red")
+    document.getElementById("27").classList.remove("purple")
+    document.getElementById("27").classList.remove("alreadyChosen")
+    document.getElementById("27").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("28").classList.remove("red")
+    document.getElementById("28").classList.remove("purple")
+    document.getElementById("28").classList.remove("alreadyChosen")
+    document.getElementById("28").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("29").classList.remove("red")
+    document.getElementById("29").classList.remove("purple")
+    document.getElementById("29").classList.remove("alreadyChosen")
+    document.getElementById("29").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("30").classList.remove("red")
+    document.getElementById("30").classList.remove("purple")
+    document.getElementById("30").classList.remove("alreadyChosen")
+    document.getElementById("30").classList.add("lowestAvailableCellInColumn")
+
+    document.getElementById("31").classList.remove("red")
+    document.getElementById("31").classList.remove("purple")
+    document.getElementById("31").classList.remove("alreadyChosen")
+    document.getElementById("31").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("32").classList.remove("red")
+    document.getElementById("32").classList.remove("purple")
+    document.getElementById("32").classList.remove("alreadyChosen")
+    document.getElementById("32").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("33").classList.remove("red")
+    document.getElementById("33").classList.remove("purple")
+    document.getElementById("33").classList.remove("alreadyChosen")
+    document.getElementById("33").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("34").classList.remove("red")
+    document.getElementById("34").classList.remove("purple")
+    document.getElementById("34").classList.remove("alreadyChosen")
+    document.getElementById("34").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("35").classList.remove("red")
+    document.getElementById("35").classList.remove("purple")
+    document.getElementById("35").classList.remove("alreadyChosen")
+    document.getElementById("35").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("36").classList.remove("red")
+    document.getElementById("36").classList.remove("purple")
+    document.getElementById("36").classList.remove("alreadyChosen")
+    document.getElementById("36").classList.add("lowestAvailableCellInColumn")
+
+    document.getElementById("37").classList.remove("red")
+    document.getElementById("37").classList.remove("purple")
+    document.getElementById("37").classList.remove("alreadyChosen")
+    document.getElementById("37").classList.remove("lowestAvailableCellInColumn")
+
+    document.getElementById("38").classList.remove("red")
+    document.getElementById("38").classList.remove("purple")
+    document.getElementById("38").classList.remove("alreadyChosen")
+    document.getElementById("38").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("39").classList.remove("red")
+    document.getElementById("39").classList.remove("purple")
+    document.getElementById("39").classList.remove("alreadyChosen")
+    document.getElementById("39").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("40").classList.remove("red")
+    document.getElementById("40").classList.remove("purple")
+    document.getElementById("40").classList.remove("alreadyChosen")
+    document.getElementById("40").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("41").classList.remove("red")
+    document.getElementById("41").classList.remove("purple")
+    document.getElementById("41").classList.remove("alreadyChosen")
+    document.getElementById("41").classList.remove("lowestAvailableCellInColumn")
+    
+    document.getElementById("42").classList.remove("red")
+    document.getElementById("42").classList.remove("purple")
+    document.getElementById("42").classList.remove("alreadyChosen")
+    document.getElementById("42").classList.add("lowestAvailableCellInColumn")
+
+    playerTurn = undefined;
+}
